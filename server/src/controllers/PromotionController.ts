@@ -1,8 +1,6 @@
 import { Request, Response, NextFunction } from 'express';
-import { adminAuth, firestoreDB } from '../services/firebaseAdmin';
-import { auth } from '../services/firebase';
+import { firestoreDB } from '../services/firebaseAdmin';
 import { Promotion, UpdatePromotion } from '../DTOs';
-import { errorHandler } from 'src/middlewares';
 
 class PromotionController {
     async create(req: Request, res: Response, next: NextFunction) {
