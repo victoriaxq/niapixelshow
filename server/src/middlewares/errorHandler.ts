@@ -10,10 +10,12 @@ const errorHandler = (
 ) => {
   let status = 500;
   let message = 'Algo deu errado.';
+  let errors: string[] = [];
 
   if (error instanceof ZodError) {
     status = 400;
-    message = error.errors.map(e => e.message).join(', ');
+    message = 'Erro de validação.';
+    errors = error.errors.map(e => e.message);
   } else if (error instanceof HttpException) {
     status = error.status;
     message = error.message;
@@ -21,7 +23,9 @@ const errorHandler = (
     message = error.message;
   }
 
-  res.status(status).json({ message });
+  console.error(`Status: ${status}, Message: ${message}, Stack: ${error.stack}`);
+
+  res.status(status).json({ message, errors });
 };
 
 export default errorHandler;

@@ -30,9 +30,10 @@ class AuthController {
                 return res.status(400).json({ message: 'Email not verified' });
             }
 
-            await signInWithEmailAndPassword(auth, email, password);
+            const userCredential = await signInWithEmailAndPassword(auth, email, password);
+            const token = await userCredential.user.getIdToken();
 
-            res.status(200).json({ message: 'Login successful' });
+            res.status(200).json({ message: 'Login successful', token });
             return next();
         } catch (error: any) {
             return next(error);
@@ -41,6 +42,11 @@ class AuthController {
 
     async logout(req: Request, res: Response, next: NextFunction) {
         try {
+            // Certificar-se de que o usuário está autenticado
+            if (!auth.currentUser) {
+                return res.status(401).json({ message: 'No user is currently logged in' });
+            }
+
             await signOut(auth);
             res.status(200).json({ message: 'Logout successful' });
             return next();
@@ -48,7 +54,6 @@ class AuthController {
             return next(error);
         }
     }
-}
+};
 
-const authController = new AuthController();
-export default authController;
+export default new AuthController();

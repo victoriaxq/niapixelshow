@@ -1,17 +1,18 @@
 import { Router } from 'express';
-import { UserController } from '../controllers';
+import UserController from '../controllers/UserController';
+import { isAuthenticated, isAdmin } from '../middlewares';
 
 const UserRouter = Router();
 
 UserRouter.route('/')
-    .post(UserController.create); // Rota para criar um usuário
+    .post(UserController.create); // Permitir que qualquer pessoa crie uma conta
 
 UserRouter.route('/all')
-    .get(UserController.readAll); // Rota para buscar todos os usuários
+    .get(isAuthenticated, isAdmin, UserController.readAll); // Apenas admin pode ver todos os usuários
 
 UserRouter.route('/:id')
-    .get(UserController.read) // Rota para buscar um usuário por ID
-    .patch(UserController.update) // Rota para atualizar um usuário por ID
-    .delete(UserController.delete) // Rota para deletar um usuário por ID
+    .get(isAuthenticated, UserController.read) // Todos os usuários autenticados podem ver os dados de um usuário por ID
+    .patch(isAuthenticated, UserController.update) // Usuário autenticado pode atualizar sua própria conta
+    .delete(isAuthenticated, UserController.delete); // Usuário autenticado pode deletar sua própria conta
 
 export default UserRouter;

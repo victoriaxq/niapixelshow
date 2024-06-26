@@ -3,7 +3,7 @@ import { z } from 'zod';
 export const User = z.object({
   name: z
     .string({ message: 'O nome não pode ser vazio' })
-    .regex(/^[a-zA-Z\u00C0-\u017F\s]+$/, { message: 'O nome deve conter apenas letras' }), // Adicionado \u00C0-\u017F para permitir acentos
+    .regex(/^[a-zA-Z\u00C0-\u017F\s]+$/, { message: 'O nome deve conter apenas letras' }),
   phone: z
     .string()
     .regex(/^\+?[0-9]+$/, {
@@ -14,6 +14,7 @@ export const User = z.object({
   password: z
     .string({ message: 'A senha não pode ser vazia' })
     .min(8, { message: 'A senha deve ter no mínimo 8 caracteres' }),
+  address: z.string().optional(),
   is_admin: z.boolean().default(false),
 });
 
