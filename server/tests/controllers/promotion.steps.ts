@@ -1,7 +1,7 @@
 import { loadFeature, defineFeature } from 'jest-cucumber';
 import supertest from 'supertest';
 import app from '../../src/app';
-import { firestoreDB } from '../../src/services/firebaseAdmin';
+import { firestoreDBTest } from '../services/firebaseAdmin';
 
 const feature = loadFeature('tests/features/promotion.feature');
 
@@ -13,18 +13,18 @@ defineFeature(feature, (test) => {
     jest.clearAllMocks();
 
     // Limpar coleções relevantes no Firestore de teste
-    const promotions = await firestoreDB.collection('promotions').get();
+    const promotions = await firestoreDBTest.collection('promotions').get();
     promotions.forEach(async (doc) => {
       await doc.ref.delete();
     });
 
-    const products = await firestoreDB.collection('products').get();
+    const products = await firestoreDBTest.collection('products').get();
     products.forEach(async (doc) => {
       await doc.ref.delete();
     });
 
     // Adicionar produto de teste necessário
-    await firestoreDB.collection('products').doc('CamisaCin').set({
+    await firestoreDBTest.collection('products').doc('CamisaCin').set({
       name: 'Camisa Cin',
     });
   });
@@ -39,7 +39,7 @@ defineFeature(feature, (test) => {
     });
 
     given('não existem promoções cadastradas com a descrição "Promoção de Ano Novo"', async () => {
-      const snapshot = await firestoreDB.collection('promotions').where('name', '==', 'Promoção de Ano Novo').get();
+      const snapshot = await firestoreDBTest.collection('promotions').where('name', '==', 'Promoção de Ano Novo').get();
       expect(snapshot.empty).toBe(true);
     });
 
@@ -64,7 +64,7 @@ defineFeature(feature, (test) => {
     when('preencher o campo "produto" com "Camisa Cin"', () => {});
 
     then('a promoção "Promoção de Ano Novo" deve aparecer na lista de promoções', async () => {
-      const snapshot = await firestoreDB.collection('promotions').where('name', '==', 'Promoção de Ano Novo').get();
+      const snapshot = await firestoreDBTest.collection('promotions').where('name', '==', 'Promoção de Ano Novo').get();
       expect(snapshot.empty).toBe(false);
     });
   });
@@ -79,7 +79,7 @@ defineFeature(feature, (test) => {
     });
 
     given('existem promoções cadastradas com a descrição "Promoção de Ano Novo"', async () => {
-      await firestoreDB.collection('promotions').doc('PromoAnoNovo').set({
+      await firestoreDBTest.collection('promotions').doc('PromoAnoNovo').set({
         start_date: '2025-01-01',
         end_date: '2025-02-01',
         name: 'Promoção de Ano Novo',
@@ -111,7 +111,7 @@ defineFeature(feature, (test) => {
     when('preencher o campo "produto" com "Camisa Cin"', () => {});
 
     then('a promoção "Promoção de Ano Novo" deve aparecer na lista de promoções', async () => {
-      const snapshot = await firestoreDB.collection('promotions').where('name', '==', 'Promoção de Ano Novo').get();
+      const snapshot = await firestoreDBTest.collection('promotions').where('name', '==', 'Promoção de Ano Novo').get();
       expect(snapshot.empty).toBe(false);
     });
   });
@@ -126,7 +126,7 @@ defineFeature(feature, (test) => {
     });
 
     given('existem promoções cadastradas com a descrição "Promoção de Ano Novo"', async () => {
-      await firestoreDB.collection('promotions').doc('PromoAnoNovo').set({
+      await firestoreDBTest.collection('promotions').doc('PromoAnoNovo').set({
         start_date: '2025-01-01',
         end_date: '2025-02-01',
         name: 'Promoção de Ano Novo',
@@ -142,7 +142,7 @@ defineFeature(feature, (test) => {
     });
 
     then('a promoção "Promoção de Ano Novo" não deve aparecer na lista de promoções', async () => {
-      const snapshot = await firestoreDB.collection('promotions').where('name', '==', 'Promoção de Ano Novo').get();
+      const snapshot = await firestoreDBTest.collection('promotions').where('name', '==', 'Promoção de Ano Novo').get();
       expect(snapshot.empty).toBe(true);
     });
   });
@@ -157,7 +157,7 @@ defineFeature(feature, (test) => {
     });
 
     given('não existem promoções cadastradas com a descrição "Promoção de Ano Novo"', async () => {
-      const snapshot = await firestoreDB.collection('promotions').where('name', '==', 'Promoção de Ano Novo').get();
+      const snapshot = await firestoreDBTest.collection('promotions').where('name', '==', 'Promoção de Ano Novo').get();
       expect(snapshot.empty).toBe(true);
     });
 
@@ -182,7 +182,7 @@ defineFeature(feature, (test) => {
     when('preencher o campo "produto" com "Camisa Cin"', () => {});
 
     then('a promoção "Promoção de Ano Novo" não deve aparecer na lista de promoções', async () => {
-      const snapshot = await firestoreDB.collection('promotions').where('name', '==', 'Promoção de Ano Novo').get();
+      const snapshot = await firestoreDBTest.collection('promotions').where('name', '==', 'Promoção de Ano Novo').get();
       expect(snapshot.empty).toBe(true);
     });
   });
